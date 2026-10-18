@@ -1,0 +1,2 @@
+const {defineConfig}=require('@playwright/test');
+module.exports=defineConfig({testDir:'./tests/e2e',fullyParallel:false,workers:1,retries:0,reporter:[['list'],['html',{open:'never'}]],use:{baseURL:'http://127.0.0.1:3000',screenshot:'on',trace:'retain-on-failure'},projects:[{name:'chromium',use:{browserName:'chromium'}}],webServer:{command:'npm start',url:'http://127.0.0.1:3000',reuseExistingServer:!process.env.CI}});

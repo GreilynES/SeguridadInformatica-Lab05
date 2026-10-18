@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UNA Chat Laboratorio 05</title><link rel="stylesheet" href="/style.css"></head>
+<body><main><h1>UNA Chat</h1><p>Laboratorio 05 · Seguridad Informática</p><p id="connection" role="status">Conectando</p>
+<ul id="messages" aria-label="Mensajes" aria-live="polite"></ul><p id="error" role="alert"></p>
+<form><label for="nombre">Nombre</label><input id="nombre" maxlength="80" placeholder="Anónimo"><label for="m">Mensaje o URL de imagen o video</label><input id="m" maxlength="2000" required autocomplete="off"><button type="submit">Enviar</button></form>
+</main><script src="/socket.io/socket.io.js"></script><script src="/chat.js"></script></body></html>
