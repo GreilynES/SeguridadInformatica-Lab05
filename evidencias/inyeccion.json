@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:3001/",
+  "type": "alert",
+  "message": "Inyección de script",
+  "payload": "<script>alert('Inyección de script');</script>",
+  "observedAt": "2026-10-18T02:08:43.487Z"
+}
