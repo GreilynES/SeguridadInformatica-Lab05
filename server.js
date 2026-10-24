@@ -1,32 +1,73 @@
 'use strict';
-const express=require('express');
-const {createServer}=require('http');
-const {Server}=require('socket.io');
-const validation=require('./libs/unalib');
+
+const express = require('express');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+const validation = require('./libs/unalib');
+
 function createChatServer() {
- const app=express();
- const http=createServer(app);
- const io=new Server(http,{maxHttpBufferSize:16000});
- app.use((_req,res,next)=>{
-   res.set('X-Content-Type-Options','nosniff');
-   res.set('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' http: https:; media-src 'self' http: https:; frame-src https://www.youtube-nocookie.com; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'");
-   next();
- });
- app.get('/',(_req,res)=>res.sendFile(__dirname+'/index.html'));
- app.use(express.static(__dirname+'/public'));
- io.on('connection',socket=>socket.on('Evento-Mensaje-Server',(raw,ack)=>{
-   const result=validation.validarMensaje(raw);
-   if(result.ok) io.emit('Evento-Mensaje-Server',JSON.stringify(result));
-   else socket.emit('Mensaje-Rechazado',result.error);
-   if(typeof ack === 'function') ack(result);
- }));
- return {app,http,io};
+  const app = express();
+  const http = createServer(app);
+  const io = new Server(http, {
+    maxHttpBufferSize: 16000
+  });
+
+  app.use((_req, res, next) => {
+    res.set('X-Content-Type-Options', 'nosniff');
+    res.set(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' http: https:; media-src 'self' http: https:; frame-src https://www.youtube-nocookie.com; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'"
+    );
+    next();
+  });
+
+  app.get('/', (_req, res) => {
+    res.sendFile(__dirname + '/index.html');
+  });
+
+  app.use(express.static(__dirname + '/public'));
+
+  io.on('connection', (socket) => {
+    socket.on('Evento-Mensaje-Server', (raw, ack) => {
+      try {
+        const result = validation.validarMensaje(raw);
+
+        if (result.ok) {
+          io.emit('Evento-Mensaje-Server', JSON.stringify(result));
+        } else {
+          socket.emit('Mensaje-Rechazado', result.error);
+        }
+
+        if (typeof ack === 'function') {
+          ack(result);
+        }
+      } catch (error) {
+        const message = error.message || 'Error al validar el mensaje';
+
+        socket.emit('Mensaje-Rechazado', message);
+
+        if (typeof ack === 'function') {
+          ack({ ok: false, error: message });
+        }
+      }
+    });
+  });
+
+  return { app, http, io };
 }
-if(require.main===module){
- const {http}=createChatServer();
- const port=process.env.PORT || 3000;
- http.listen(port, '0.0.0.0', () => {
-  console.log(`UNA Chat escuchando en el puerto ${port}`);
-});
+
+if (require.main === module) {
+  const { http } = createChatServer();
+  const port = process.env.PORT || 3000;
+
+  http.on('error', (error) => {
+    console.error('Error al iniciar UNA Chat:', error.message);
+    process.exit(1);
+  });
+
+  http.listen(port, '0.0.0.0', () => {
+    console.log(`UNA Chat escuchando en el puerto ${port}`);
+  });
 }
-module.exports={createChatServer};
+
+module.exports = { createChatServer };
