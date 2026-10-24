@@ -11,6 +11,4 @@ describe('Validación segura de mensajes',()=>{
  test('normaliza color no confiable',()=>expect(v.validarMensaje(JSON.stringify({mensaje:'Hola',color:'red;bad'})).color).toBe('#1b4965'));
  test('limita longitud',()=>expect(send('a'.repeat(2001)).ok).toBe(false));
  test('compatibilidad con validateMessage',()=>expect(JSON.parse(v.validateMessage(JSON.stringify({mensaje:'Hola'}))).ok).toBe(true));
- test('fallo intencional para comprobar el bloqueo', () => {
-  expect(1 + 1).toBe(3);
 });
