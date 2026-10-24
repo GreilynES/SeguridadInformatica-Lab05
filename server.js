@@ -25,6 +25,8 @@ function createChatServer() {
 if(require.main===module){
  const {http}=createChatServer();
  const port=process.env.PORT || 3000;
- http.listen(port,'127.0.0.1',()=>console.log('UNA Chat http://127.0.0.1:'+port));
+ http.listen(port, '0.0.0.0', () => {
+  console.log(`UNA Chat escuchando en el puerto ${port}`);
+});
 }
 module.exports={createChatServer};
