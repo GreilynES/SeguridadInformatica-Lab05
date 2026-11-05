@@ -1,4 +1,6 @@
 'use strict';
+require('./instrument');
+const Sentry = require('@sentry/node');
 const express=require('express');
 const {createServer}=require('http');
 const {Server}=require('socket.io');
@@ -20,11 +22,20 @@ function createChatServer() {
    else socket.emit('Mensaje-Rechazado',result.error);
    if(typeof ack === 'function') ack(result);
  }));
+ // Ruta temporal: deshabilitar SENTRY_TEST_ENABLED despues de la prueba.
+ if (process.env.SENTRY_TEST_ENABLED === 'true') {
+   app.get('/debug-sentry', (_req, res) => {
+     const eventId = Sentry.captureException(
+       new Error('LAB7 - Error controlado desde Render')
+     );
+     res.status(500).json({error: 'Prueba controlada de Sentry', eventId});
+   });
+ }
  return {app,http,io};
 }
 if(require.main===module){
  const {http}=createChatServer();
  const port=process.env.PORT || 3000;
- http.listen(port,'127.0.0.1',()=>console.log('UNA Chat http://127.0.0.1:'+port));
+ http.listen(port,'0.0.0.0',()=>console.log('UNA Chat escuchando en puerto '+port));
 }
 module.exports={createChatServer};
