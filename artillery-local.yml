@@ -1,0 +1,19 @@
+config:
+  target: "http://localhost:3002"
+  phases:
+    - name: "LAB7 5 solicitudes por segundo durante 60 segundos"
+      duration: 60
+      arrivalRate: 5
+  http:
+    timeout: 10
+scenarios:
+  - name: "Un mensaje HTTP por usuario virtual"
+    flow:
+      - post:
+          url: "/api/messages"
+          headers:
+            X-Lab-Test: "{{ $env.LAB_TEST_ID }}"
+          json:
+            nombre: "Artillery"
+            mensaje: "LAB7 prueba de carga local"
+            color: "#1b4965"

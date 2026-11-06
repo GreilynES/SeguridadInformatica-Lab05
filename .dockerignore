@@ -1,0 +1,12 @@
+**
+!Dockerfile
+!package.json
+!package-lock.json
+!server.js
+!instrument.js
+!telemetry.js
+!index.html
+!libs/
+!libs/**
+!public/
+!public/**

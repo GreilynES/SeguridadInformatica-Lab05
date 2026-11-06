@@ -1,0 +1,13 @@
+﻿{
+    "test_run_id":  "carga-20261105-170846",
+    "target":  "http://localhost:3002/api/messages",
+    "start_utc":  "2026-11-05T17:08:46.9806875Z",
+    "end_utc":  "2026-11-05T17:09:57.7708900Z",
+    "start_local":  "2026-11-05T11:08:46.9806875-06:00",
+    "end_local":  "2026-11-05T11:09:57.7718893-06:00",
+    "expected_requests":  300,
+    "arrival_rate":  5,
+    "duration_seconds":  60,
+    "command":  "npx artillery run --output \u003ccarpeta-de-prueba\u003e/reporte.json artillery-local.yml",
+    "exit_code":  0
+}
