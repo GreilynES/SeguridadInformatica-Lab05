@@ -8,5 +8,7 @@
 !index.html
 !libs/
 !libs/**
+!server/
+!server/**
 !public/
 !public/**

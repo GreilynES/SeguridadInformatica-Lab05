@@ -24,12 +24,16 @@ npm test
 npm run report
 ```
 
-- Unitarias: 37 pruebas, incluidas las 5 originales de `test/test.js`.
-- Integración: 7 pruebas con el evento real `Evento-Mensaje-Server`, clientes Socket.IO y Supertest para GET /.
+- Unitarias: 53 pruebas, incluidas las 5 originales de `test/test.js` y las comprobaciones de Vault.
+- Integración: 12 pruebas que cubren Socket.IO, HTTP y el bloqueo de acceso anónimo con Auth0.
 - E2E: 5 pruebas de Playwright en Chromium headed con frontend y backend reales.
-- `npm test` ejecuta las 44 pruebas de Jest y excluye `tests/e2e`.
+- `npm test` ejecuta las 65 pruebas de Jest y excluye `tests/e2e`.
 - Las pruebas de integración abren un puerto efímero y cierran clientes y servidor.
-- Playwright inicia el servidor si el puerto 3000 está disponible y cierra el servidor que inició. Si ya hay un chat activo, lo reutiliza.
+- Playwright necesita el puerto 3000 libre e inicia un servidor aislado en modo de pruebas, sin cargar el `.env` privado. Las cinco pruebas históricas revisan el chat sin autenticación; no acreditan el login de Vault.
+
+## Laboratorio 8
+
+La configuración del backend con Auth0 y Supabase Vault se explica en `VAULT_BACKEND.md`. Se usa el puerto 3000; la aplicación React del puerto 5173 tiene una sesión independiente. El `.env` local contiene la conexión privada y queda excluido de Git y Docker. El Client Secret se lee exclusivamente desde Vault.
 
 ## Ejemplos
 
