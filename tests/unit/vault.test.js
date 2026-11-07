@@ -1,5 +1,5 @@
 const {connectionOptions,readVaultSecret}=require('../../server/vault');
-const {publicConfig,validatedEnvironment,probeClientSecret}=require('../../server/auth');
+const {publicConfig,validatedEnvironment,probeClientSecret,requestCredentialProbe}=require('../../server/auth');
 const env={VAULT_DATABASE_URL:'postgresql://una_chat_backend.project:fake%40password@aws-0-us-east-1.pooler.supabase.com:5432/postgres?sslmode=verify-full'};
 test('conexión conserva TLS y decodifica solo campos de la URI',()=>{
  const config=connectionOptions(env);
@@ -40,4 +40,10 @@ test('prueba de credencial acepta únicamente invalid_grant y oculta el resto de
 test('invalid_client impide continuar',async()=>{
  const fake=async()=>({status:401,json:async()=>({error:'invalid_client'})});
  await expect(probeClientSecret({domain:'tenant.auth0.com',clientId:'public',clientSecret:'private',baseURL:'http://localhost:3000'},fake)).rejects.toThrow('invalid_client');
+});
+test('conserva access_denied real de Auth0 sin devolver campos privados',async()=>{
+ const fake=async()=>({status:401,json:async()=>({error:'access_denied',error_description:'private diagnostic'})});
+ const settings={domain:'tenant.auth0.com',clientId:'public',clientSecret:'private',baseURL:'http://localhost:3000'};
+ await expect(requestCredentialProbe(settings,fake)).resolves.toEqual({httpStatus:401,error:'access_denied'});
+ await expect(probeClientSecret(settings,fake)).rejects.toThrow('access_denied');
 });

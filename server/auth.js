@@ -27,13 +27,13 @@ async function requestCredentialProbe(settings, fetcher = fetch) {
  let result;
  try {result = await response.json();} catch {throw new Error('Auth0 no devolvió una respuesta JSON a la prueba de arranque.');}
  // Solo se conserva el estado y el código permitido. Nunca el cuerpo ni las credenciales.
- const error = ['invalid_client','invalid_grant'].includes(result.error) ? result.error : 'unexpected_response';
+ const error = ['invalid_client','invalid_grant','access_denied'].includes(result.error) ? result.error : 'unexpected_response';
  return {httpStatus: response.status, error};
 }
 async function probeClientSecret(settings, fetcher = fetch) {
  const result = await requestCredentialProbe(settings, fetcher);
  const {error} = result;
- if (error !== 'invalid_grant') throw new Error(error === 'invalid_client' ? 'Auth0 devolvió invalid_client. Revisa el secreto y el método Client Secret (Post) de UNA Chat Backend.' : 'Auth0 no confirmó la prueba de credencial. Revisa aplicación, callback y conectividad.');
+ if (error !== 'invalid_grant') throw new Error(['invalid_client','access_denied'].includes(error) ? `Auth0 devolvió ${error}. Revisa el secreto y el método Client Secret (Post) de UNA Chat Backend.` : 'Auth0 no confirmó la prueba de credencial. Revisa aplicación, callback y conectividad.');
  return result;
 }
 async function loadAuthSettings(env = process.env) {

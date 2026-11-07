@@ -24,10 +24,10 @@ npm test
 npm run report
 ```
 
-- Unitarias: 53 pruebas, incluidas las 5 originales de `test/test.js` y las comprobaciones de Vault.
+- Unitarias: 54 pruebas, incluidas las 5 originales de `test/test.js` y las comprobaciones de Vault.
 - Integración: 12 pruebas que cubren Socket.IO, HTTP y el bloqueo de acceso anónimo con Auth0.
 - E2E: 5 pruebas de Playwright en Chromium headed con frontend y backend reales.
-- `npm test` ejecuta las 65 pruebas de Jest y excluye `tests/e2e`.
+- `npm test` ejecuta las 66 pruebas de Jest y excluye `tests/e2e`.
 - Las pruebas de integración abren un puerto efímero y cierran clientes y servidor.
 - Playwright necesita el puerto 3000 libre e inicia un servidor aislado en modo de pruebas, sin cargar el `.env` privado. Las cinco pruebas históricas revisan el chat sin autenticación; no acreditan el login de Vault.
 

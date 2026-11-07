@@ -49,6 +49,8 @@ El servidor obtiene el secreto solo desde Vault, aunque todavía exista AUTH0_CL
 
 Para registrar la comparación después de la rotación, conserva temporalmente el secreto anterior en un archivo privado fuera del repositorio y ejecuta `node scripts/check-secret-rotation.cjs RUTA_AL_ARCHIVO_PRIVADO`. El script lee el secreto nuevo desde Vault y registra únicamente hora, estado HTTP y el campo error de cada intento. El resultado esperado es invalid_client para el anterior e invalid_grant para el nuevo. No pases el secreto como argumento ni lo incluyas en capturas. Esta comparación no rota ni modifica credenciales por sí sola.
 
+En la comprobación real de este tenant, Auth0 rechazó el secreto anterior con HTTP 401 y `access_denied`, mientras el nuevo devolvió HTTP 403 e `invalid_grant`. El script conserva ese error real y distingue la comprobación funcional de la coincidencia literal con `invalid_client` que pide la guía. No sustituye el código recibido por otro esperado.
+
 ## Pruebas
 
 Para repetir la consulta real de permisos y longitud sin mostrar credenciales:

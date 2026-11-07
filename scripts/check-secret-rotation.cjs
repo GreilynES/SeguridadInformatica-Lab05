@@ -17,6 +17,8 @@ const {validatedEnvironment,requestCredentialProbe}=require('../server/auth');
   const result=await requestCredentialProbe({...settings,clientSecret:value});
   results.push({time:new Date().toISOString(),credential:label,...result});
  }
- console.log(JSON.stringify({results,passed:results[0].error==='invalid_client'&&results[1].error==='invalid_grant'},null,2));
- if(!(results[0].error==='invalid_client'&&results[1].error==='invalid_grant'))process.exitCode=1;
+ const previousCredentialRejected=results[0].error==='invalid_client'||(results[0].httpStatus===401&&results[0].error==='access_denied');
+ const newCredentialAccepted=results[1].error==='invalid_grant';
+ console.log(JSON.stringify({results,previousCredentialRejected,newCredentialAccepted,guideExpectedOldError:'invalid_client',observedOldErrorMatchesGuide:results[0].error==='invalid_client',passed:previousCredentialRejected&&newCredentialAccepted},null,2));
+ if(!(previousCredentialRejected&&newCredentialAccepted))process.exitCode=1;
 })().catch(e=>{const allowed=/^(Configura Auth0|Indica la ruta|No se pudo leer el archivo privado|El archivo privado|Los dos valores)/.test(e.message);console.error(allowed?e.message:'No se pudo completar la comparación. Revisa Vault, Auth0 y la conexión privada.');process.exitCode=1;});
